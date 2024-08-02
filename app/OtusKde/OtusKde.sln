@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otusKde", "otusKde.csproj", "{01273B18-50CB-4885-B019-0A88CE5EEBB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{5DC3F6DB-2034-4E4B-BE9B-D95EC69BBAAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeSeeder", "..\OtusKdeSeeder\OtusKdeSeeder\OtusKdeSeeder.csproj", "{800A9673-B2BB-4B64-832F-34FB2F62453C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01273B18-50CB-4885-B019-0A88CE5EEBB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01273B18-50CB-4885-B019-0A88CE5EEBB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01273B18-50CB-4885-B019-0A88CE5EEBB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01273B18-50CB-4885-B019-0A88CE5EEBB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{800A9673-B2BB-4B64-832F-34FB2F62453C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{800A9673-B2BB-4B64-832F-34FB2F62453C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{800A9673-B2BB-4B64-832F-34FB2F62453C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{800A9673-B2BB-4B64-832F-34FB2F62453C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{800A9673-B2BB-4B64-832F-34FB2F62453C} = {5DC3F6DB-2034-4E4B-BE9B-D95EC69BBAAA}
+	EndGlobalSection
+EndGlobal
