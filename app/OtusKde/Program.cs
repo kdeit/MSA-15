@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using OtusKde.DAL;
+using OtusKdeDAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +11,17 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddControllers()
     .AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+
+var DB_HOST = Environment.GetEnvironmentVariable("DB_HOST");
+var DB_PORT = Environment.GetEnvironmentVariable("DB_PORT");
+var DB_NAME = Environment.GetEnvironmentVariable("DB_NAME");
+var DB_USER = Environment.GetEnvironmentVariable("DB_USER");
+var DB_PASSWORD = Environment.GetEnvironmentVariable("DB_PASSWORD");
+
 builder.Services.AddDbContext<MasterContext>(
     opt =>
-        opt.UseNpgsql("Host=localhost;Database=kdeOtusDb;Username=postgres;Password=docker;Port=5432")
+        opt.UseNpgsql($"Host={DB_HOST};Database={DB_NAME};Username={DB_USER};Password={DB_PASSWORD};Port={DB_PORT}")
 );
 
 var app = builder.Build();

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OtusKde.DAL;
+using OtusKdeDAL;
 using OtusKde.Models.Input;
 
 namespace OtusKde.Controllers;
