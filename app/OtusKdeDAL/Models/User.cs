@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OtusKde.DAL;
+namespace OtusKdeDAL;
 
 public class User : BaseEntity
 {

@@ -1,0 +1,4 @@
+0 - Общие настройки:  kubectl -f ./00_configs
+1 - БД: helm upgrade --install -f ./01_db/postgres-config.yaml postgres oci://registry-1.docker.io/bitnamicharts/postgresql
+2 - При необходимости миграции БД: kubectl -f ./02_seeding
+3 - Разворачиваем API: kubectl -f ./03_api

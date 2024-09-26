@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: asp-seed
+spec:
+  template:
+    spec:
+      containers:
+      - name: seeder
+        image: kdeit/aspseeder
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: app-config
+          - secretRef:
+              name: app-config
+      restartPolicy: Never
+  backoffLimit: 4

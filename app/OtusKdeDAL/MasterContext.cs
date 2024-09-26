@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace OtusKde.DAL;
+namespace OtusKdeDAL;
 
 public class MasterContext : DbContext
 {
