@@ -37,7 +37,7 @@ var faker = new Faker<User>()
     Console.WriteLine("User Created! Email={0}", u.Email);
 });
 
-context.AddRange(faker.Generate(100));
+context.AddRange(faker.Generate(1000));
 await context.SaveChangesAsync();
 
 Console.Write("Task complete");
