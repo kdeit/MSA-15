@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OtusKdeDAL;
 
-public class User : BaseEntity
+public class UserCreateUpdateRequest
 {
-    public string Name { get; set; }
     [EmailAddress] public string Email { get; set; }
+    public string Name { get; set; }
 }

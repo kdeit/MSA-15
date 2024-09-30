@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace OtusKde.Controllers;
@@ -12,12 +13,10 @@ public class PingController : Controller
         _config = config;
     }
     [HttpGet]
+    [Authorize]
     public ActionResult<string> Pong()
     {
         
-        var res1 = Environment.GetEnvironmentVariable("DB_NAME");
-        var res2 = Environment.GetEnvironmentVariable("DB_LOGIN");
-
-        return Ok($"{res1} | {res2}" ?? "Hello");
+        return Ok("Hello");
     }
 }

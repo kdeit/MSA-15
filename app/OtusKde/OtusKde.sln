@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeSeeder", "..\OtusKde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeDAL", "..\OtusKdeDAL\OtusKdeDAL.csproj", "{4D72D20F-C749-4161-91E0-D8F2A6AC0AC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeClient", "..\OtusKdeClient\OtusKdeClient.csproj", "{F5C6E695-5266-4B55-B8BF-82C2B37F8BB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{4D72D20F-C749-4161-91E0-D8F2A6AC0AC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D72D20F-C749-4161-91E0-D8F2A6AC0AC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D72D20F-C749-4161-91E0-D8F2A6AC0AC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5C6E695-5266-4B55-B8BF-82C2B37F8BB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5C6E695-5266-4B55-B8BF-82C2B37F8BB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5C6E695-5266-4B55-B8BF-82C2B37F8BB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5C6E695-5266-4B55-B8BF-82C2B37F8BB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{800A9673-B2BB-4B64-832F-34FB2F62453C} = {5DC3F6DB-2034-4E4B-BE9B-D95EC69BBAAA}

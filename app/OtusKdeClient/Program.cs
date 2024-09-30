@@ -1,8 +1,8 @@
-using Bogus;
 using Microsoft.EntityFrameworkCore;
 using OtusKdeDAL;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
 
 var connectionString = "Host=localhost;Database=otus;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())
@@ -20,25 +20,8 @@ builder.Services.AddDbContext<MasterContext>(
     opt => opt.UseNpgsql(connectionString)
 );
 
-
 var app = builder.Build();
 
-using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
-var context = services.GetRequiredService<MasterContext>();
-context.Database.EnsureDeleted();
-context.Database.EnsureCreated();
+app.MapControllers();
 
-var faker = new Faker<User>()
-    .RuleFor(u => u.FirstName, (f) => f.Name.FirstName())
-    .RuleFor(u => u.LastName, (f) => f.Name.LastName())
-    .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.LastName))
-    .FinishWith((f, u) =>
-{
-    Console.WriteLine("User Created! Email={0}", u.Email);
-});
-
-context.AddRange(faker.Generate(1000));
-await context.SaveChangesAsync();
-
-Console.Write("Task complete");
+app.Run();
