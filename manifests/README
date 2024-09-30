@@ -2,3 +2,7 @@
 1 - БД: helm upgrade --install -f ./01_db/postgres-config.yaml postgres oci://registry-1.docker.io/bitnamicharts/postgresql
 2 - При необходимости миграции БД: kubectl apply -f ./02_seeding
 3 - Разворачиваем API: kubectl apply -f ./03_api
+4 - Prometheus
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo update
+    helm upgrade --install -f ./04_prometheus/prometheus.yml prometheus prometheus-community/prometheus

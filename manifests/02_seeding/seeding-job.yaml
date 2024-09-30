@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: seeder
-        image: kdeit/aspseeder
+        image: kdeit/aspseeder:latest
         imagePullPolicy: Always
         envFrom:
           - configMapRef:

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: kdeit/aspapi
+        image: kdeit/aspapi:latest
         imagePullPolicy: "Always"
         ports:
         - containerPort: 8080
