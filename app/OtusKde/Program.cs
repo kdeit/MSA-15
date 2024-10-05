@@ -24,9 +24,9 @@ builder.Services.AddAuthentication(options =>
     })
     .AddOpenIdConnect(options =>
     {
-        options.Authority = "http://localhost:9090/realms/master";
+        options.Authority = "http://localhost:9090/realms/otus";
         options.ClientId = "asptestclient";
-        options.ClientSecret = "FErJwOXeuonP7UUh5DOFcf8xLuvXpR61";
+        options.ClientSecret = "p8nOvrIKkAx4nfwsK0E3yP8so9hwq6Kj";
         
         options.ResponseType = "code";
         options.SaveTokens = true;

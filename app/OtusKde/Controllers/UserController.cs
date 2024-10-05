@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,19 +16,42 @@ public class UserController : Controller
     {
         _http = http;
         _http.BaseAddress = new Uri("http://localhost:5015");
-        
     }
 
-    [HttpGet("{id}")]
+    [HttpGet]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<bool>> GetById(int id)
+    public async Task<ActionResult<User>> GetById()
     {
-        var res = await _http.GetAsync($"user/{id}");
+        var email = HttpContext.User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+        if (email is null) return NotFound();
+        var res = await _http.GetAsync($"user/{email}");
         if (!res.IsSuccessStatusCode) return NotFound();
         string content = await res.Content.ReadAsStringAsync();
          
         return Ok(content);
+    }
+    
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<bool>> Create(UserCreateUpdateRequest model)
+    {
+        JsonContent content = JsonContent.Create(model);
+        var res = await _http.PostAsync($"user/", content);
+        
+        return Ok(res.IsSuccessStatusCode);
+    }
+    
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<bool>> Update(UserCreateUpdateRequest model)
+    {
+        JsonContent content = JsonContent.Create(model);
+        var res = await _http.PostAsync($"user/", content);
+        
+        return Ok(res.IsSuccessStatusCode);
     }
 }

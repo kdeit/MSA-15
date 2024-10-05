@@ -16,7 +16,4 @@
     <ItemGroup>
       <ProjectReference Include="..\OtusKdeDAL\OtusKdeDAL.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Models\" />
-    </ItemGroup>
 </Project>
