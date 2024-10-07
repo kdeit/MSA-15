@@ -6,3 +6,17 @@ service:
 auth:
   adminUser: admin
   adminPassword: sEcret
+
+extraEnvVars:
+  - name: KEYCLOAK_EXTRA_ARGS # override values from the conf file
+    value: --import-realm
+
+extraVolumes:
+  - name: realm-secret
+    secret:
+      secretName: realm-secret
+
+extraVolumeMounts:
+  - name: realm-secret
+    mountPath: "/opt/bitnami/keycloak/data/import"
+    readOnly: true

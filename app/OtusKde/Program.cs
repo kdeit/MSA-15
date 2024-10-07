@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using OpenTelemetry.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,33 +14,21 @@ builder.Services
 
 builder.Services.AddAuthentication(options =>
     {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Account/Login";
-    })
-    .AddOpenIdConnect(options =>
+    .AddJwtBearer(options =>
     {
         options.Authority = "http://localhost:9090/realms/otus";
-        options.ClientId = "asptestclient";
-        options.ClientSecret = "p8nOvrIKkAx4nfwsK0E3yP8so9hwq6Kj";
-        
-        options.ResponseType = "code";
-        options.SaveTokens = true;
-        options.Scope.Add("openid");
-        options.CallbackPath = "/login-callback"; // Update callback path
-        options.SignedOutCallbackPath = "/logout-callback"; // Update signout callback path
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            NameClaimType = "email",
-            RoleClaimType = "roles"
-        };
         options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+        options.Audience = "account";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = true,
+            ValidateIssuer = true,
+            ValidIssuer = "http://localhost:9090/realms/otus"
+        };
     });
-
-
 
 builder.Services.AddOpenTelemetry().WithMetrics(builder =>
 {

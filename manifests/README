@@ -11,4 +11,5 @@
     helm repo update
     helm upgrade --install -f ./05_grafana/grafana.yml grafana grafana/grafana
 6 - KeyCloak
+    kubectl -n default create secret generic realm-secret --from-file=./06_keycloak/realms/realm-otus.json
     helm upgrade --install -f ./06_keycloak/keycloak.yaml keycloak oci://registry-1.docker.io/bitnamicharts/keycloak

@@ -3,6 +3,7 @@ using OtusKdeDAL;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 
 var connectionString = "Host=localhost;Database=otus;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())

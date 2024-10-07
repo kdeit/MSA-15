@@ -1,8 +1,6 @@
 using System.Security.Claims;
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using OtusKdeDAL;
 
 namespace OtusKde.Controllers;
@@ -45,12 +43,15 @@ public class UserController : Controller
     }
     
     [HttpPut]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<bool>> Update(UserCreateUpdateRequest model)
     {
+        var email = HttpContext.User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+        if (email is null || email != model.Email) return NotFound();
         JsonContent content = JsonContent.Create(model);
-        var res = await _http.PostAsync($"user/", content);
+        var res = await _http.PutAsync($"user/", content);
         
         return Ok(res.IsSuccessStatusCode);
     }

@@ -1,0 +1,370 @@
+{
+	"info": {
+		"_postman_id": "701e6a3f-0e69-4b84-a01b-12bb75dd7647",
+		"name": "otus-21",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6380106"
+	},
+	"item": [
+		{
+			"name": "CreateUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if(pm.info.iteration === 1){",
+							"pm.execution.skipRequest();    ",
+							"}",
+							"",
+							"const name = Math.random().toString(36).slice(2);",
+							"    console.warn(\"New name: \", name);",
+							"    pm.collectionVariables.set(\"firstName\", name);",
+							"const uuid = require('uuid')",
+							"let email=uuid()+'@domain.com'",
+							"pm.collectionVariables.set(\"email\", email);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\",\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"password\": \"{{password}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/user",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"if(pm.info.iteration === 0){",
+							"    pm.collectionVariables.set(\"access_token\", '--');",
+							"}else if (pm.info.iteration > 0) {",
+							"    var jsonData = pm.response.json();",
+							"     pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+							"    pm.test(\"Response success code\", function () {",
+							"        pm.response.to.have.status(200);",
+							"    })",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "{{client_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{client_secret}}",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{email}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{auth_url}}/realms/otus/protocol/openid-connect/token",
+					"host": [
+						"{{auth_url}}"
+					],
+					"path": [
+						"realms",
+						"otus",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if(pm.info.iteration === 0){",
+							"    pm.test(\"401 without token\", function () {",
+							"    pm.response.to.have.status(401);",
+							"    });",
+							"}else{",
+							"    ",
+							"    pm.test(\"Response success code\", function () {",
+							"        pm.response.to.have.status(200);",
+							"    })",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const name = Math.random().toString(36).slice(2);",
+							"    console.warn(\"New name: \", name);",
+							"    pm.collectionVariables.set(\"firstName\", name);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\",\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/user",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if(pm.info.iteration === 0){",
+							"pm.test(\"401 without token\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"}",
+							"else if (pm.info.iteration > 0){",
+							"    pm.test(\"Response success code\", function () {",
+							"        pm.response.to.have.status(200);",
+							"    })",
+							"",
+							"    const email =",
+							"        pm.collectionVariables.get(\"email\");",
+							"    pm.test(\"User email equal\", function () {",
+							"        var jsonData = pm.response.json();",
+							"        pm.expect(jsonData.email).to.eql(email);",
+							"    });",
+							"    pm.test(\"User name is change\", function () {",
+							"        const name =",
+							"        pm.collectionVariables.get(\"firstName\");",
+							"        var jsonData = pm.response.json();",
+							"        pm.expect(jsonData.firstName).to.eql(name);",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/user",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5079",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "test@email.loc",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "sEcret1",
+			"type": "string"
+		},
+		{
+			"key": "firstName",
+			"value": "Prenom",
+			"type": "string"
+		},
+		{
+			"key": "lastName",
+			"value": "Nom",
+			"type": "string"
+		},
+		{
+			"key": "auth_url",
+			"value": "http://localhost:9090",
+			"type": "string"
+		},
+		{
+			"key": "client_id",
+			"value": "asptestclient",
+			"type": "string"
+		},
+		{
+			"key": "client_secret",
+			"value": "p8nOvrIKkAx4nfwsK0E3yP8so9hwq6Kj",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "--",
+			"type": "string"
+		}
+	]
+}
