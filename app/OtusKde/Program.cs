@@ -21,7 +21,7 @@ builder.Services.AddAuthentication(options =>
     {
         var _base = builder.Environment.IsDevelopment()
             ? "http://localhost:9090"
-            : "keycloak.default.svc.cluster.local:9090";
+            : "http://keycloak.default.svc.cluster.local:9090";
         
         options.Authority = $"{_base}/realms/otus";
         options.RequireHttpsMetadata = false;

@@ -1,63 +1,61 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OtusKdeDAL;
 
 namespace OtusKde.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class UserController : Controller
+[Route("[controller]")]
+public class AuthController : Controller
 {
     private readonly HttpClient _http;
     private readonly IHostEnvironment _env;
 
-    public UserController(HttpClient http, IHostEnvironment env)
+    public AuthController(HttpClient http, IHostEnvironment env)
     {
         _http = http;
         _env = env;
-        _http.BaseAddress = _env.IsDevelopment()
-            ? new Uri("http://localhost:5015")
-            : new Uri("http://api-client-asp.default.svc.cluster.local");
-    }
-
-    [HttpGet]
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<User>> GetById()
-    {
-        var email = HttpContext.User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-        if (email is null) return NotFound();
-        var res = await _http.GetAsync($"user/{email}");
-        if (!res.IsSuccessStatusCode) return NotFound();
-        string content = await res.Content.ReadAsStringAsync();
-
-        return Ok(content);
+        var _base = _env.IsDevelopment()
+            ? new Uri("http://localhost:9090")
+            : new Uri("http://keycloak.default.svc.cluster.local:9090");
+        _http.BaseAddress = _base;
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<bool>> Create(UserCreateUpdateRequest model)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<KeycloakTokenResponse>> GetToken([FromBody] AuthModel model)
     {
-        JsonContent content = JsonContent.Create(model);
-        var res = await _http.PostAsync($"user/", content);
+        Console.WriteLine("Get user token ...");
+        Console.WriteLine($"UserName:: {model.username}");
+        Console.WriteLine($"Password:: {model.password}");
+        var tokenUrl = "realms/otus/protocol/openid-connect/token";
+        var dict = new Dictionary<string, string>();
+        dict.Add("client_id", "asptestclient");
+        dict.Add("client_secret", "p8nOvrIKkAx4nfwsK0E3yP8so9hwq6Kj");
+        dict.Add("grant_type", "password");
+        dict.Add("username", model.username);
+        dict.Add("password", model.password);
+        var _ = new HttpRequestMessage(HttpMethod.Post, tokenUrl)
+        {
+            Content = new FormUrlEncodedContent(dict)
+        };
+        var res0 = await _http.SendAsync(_);
+        Console.WriteLine($"Answer:: {res0}");
+        if (!res0.IsSuccessStatusCode) return BadRequest();
 
-        return Ok(res.IsSuccessStatusCode);
+        return Ok(await res0.Content.ReadFromJsonAsync<KeycloakTokenResponse>());
     }
 
-    [HttpPut]
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<bool>> Update(UserCreateUpdateRequest model)
-    {
-        var email = HttpContext.User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-        if (email is null || email != model.Email) return NotFound();
-        JsonContent content = JsonContent.Create(model);
-        var res = await _http.PutAsync($"user/", content);
+    public record AuthModel(
+        string username,
+        string password
+    );
 
-        return Ok(res.IsSuccessStatusCode);
-    }
+    public record KeycloakTokenResponse(
+        string access_token,
+        string token_type,
+        string scope,
+        int expires_in,
+        int refresh_expires_in,
+        int before
+    );
 }

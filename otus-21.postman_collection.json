@@ -120,46 +120,21 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "client_id",
-							"value": "{{client_id}}",
-							"type": "text"
-						},
-						{
-							"key": "client_secret",
-							"value": "{{client_secret}}",
-							"type": "text"
-						},
-						{
-							"key": "username",
-							"value": "{{email}}",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "{{password}}",
-							"type": "text"
-						},
-						{
-							"key": "grant_type",
-							"value": "password",
-							"type": "text"
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
 						}
-					]
+					}
 				},
 				"url": {
-					"raw": "{{auth_url}}/realms/otus/protocol/openid-connect/token",
+					"raw": "{{base_url}}/auth",
 					"host": [
-						"{{auth_url}}"
+						"{{base_url}}"
 					],
 					"path": [
-						"realms",
-						"otus",
-						"protocol",
-						"openid-connect",
-						"token"
+						"auth"
 					]
 				}
 			},
@@ -323,7 +298,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:5079",
+			"value": "http://arch.homework",
 			"type": "string"
 		},
 		{
@@ -344,11 +319,6 @@
 		{
 			"key": "lastName",
 			"value": "Nom",
-			"type": "string"
-		},
-		{
-			"key": "auth_url",
-			"value": "http://localhost:9090",
 			"type": "string"
 		},
 		{

@@ -2,11 +2,11 @@
 1 - БД: helm upgrade --install -f ./01_db/postgres-config.yaml postgres oci://registry-1.docker.io/bitnamicharts/postgresql
 2 - При необходимости миграции БД: kubectl apply -f ./02_seeding
 3 - Разворачиваем API: kubectl apply -f ./03_api
-4 - Prometheus
+4 - Prometheus (опционально)
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
     helm repo update
     helm upgrade --install -f ./04_prometheus/prometheus.yml prometheus prometheus-community/prometheus
-5 - Grafana
+5 - Grafana (опционально)
     helm repo add grafana https://grafana.github.io/helm-charts
     helm repo update
     helm upgrade --install -f ./05_grafana/grafana.yml grafana grafana/grafana
@@ -14,4 +14,5 @@
     kubectl -n default create secret generic realm-secret --from-file=./06_keycloak/realms/realm-otus.json
     helm upgrade --install -f ./06_keycloak/keycloak.yaml keycloak oci://registry-1.docker.io/bitnamicharts/keycloak
 7 - ApiGate
+    #minikube addons enable ingress
     kubectl apply -f ./07_api-gate
