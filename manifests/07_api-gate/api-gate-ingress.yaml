@@ -19,6 +19,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: asp-service
+            name: api-gate-asp
             port: 
               number: 80

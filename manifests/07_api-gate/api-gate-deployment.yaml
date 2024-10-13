@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-client-asp
+  name: api-gate-asp
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: api-client-asp
+      app: api-gate-asp
   template:
     metadata:
       labels:
-        app: api-client-asp
+        app: api-gate-asp
     spec:
       containers:
-      - name: api-client-asp
-        image: kdeit/asp-client:latest
+      - name: api-gate-asp
+        image: kdeit/asp-gate:latest
         imagePullPolicy: "Always"
         ports:
         - containerPort: 8080
