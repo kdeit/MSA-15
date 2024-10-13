@@ -19,14 +19,18 @@ builder.Services.AddAuthentication(options =>
     })
     .AddJwtBearer(options =>
     {
-        options.Authority = "http://localhost:9090/realms/otus";
-        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+        var _base = builder.Environment.IsDevelopment()
+            ? "http://localhost:9090"
+            : "keycloak.default.svc.cluster.local:9090";
+        
+        options.Authority = $"{_base}/realms/otus";
+        options.RequireHttpsMetadata = false;
         options.Audience = "account";
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateAudience = true,
             ValidateIssuer = true,
-            ValidIssuer = "http://localhost:9090/realms/otus"
+            ValidIssuer = $"{_base}/realms/otus"
         };
     });
 
@@ -38,8 +42,11 @@ builder.Services.AddOpenTelemetry().WithMetrics(builder =>
     builder.AddView("http.server.request.duration",
         new ExplicitBucketHistogramConfiguration
         {
-            Boundaries = new double[] { 0, 0.005, 0.01, 0.025, 0.05,
-                0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10 }
+            Boundaries = new double[]
+            {
+                0, 0.005, 0.01, 0.025, 0.05,
+                0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10
+            }
         });
 });
 
@@ -57,4 +64,5 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();
+Console.WriteLine("Start «Gate» service");
 app.Run();

@@ -10,10 +10,15 @@ namespace OtusKde.Controllers;
 public class UserController : Controller
 {
     private readonly HttpClient _http;
-    public UserController(HttpClient http)
+    private readonly IHostEnvironment _env;
+
+    public UserController(HttpClient http, IHostEnvironment env)
     {
         _http = http;
-        _http.BaseAddress = new Uri("http://localhost:5015");
+        _env = env;
+        _http.BaseAddress = _env.IsDevelopment()
+            ? new Uri("http://localhost:5015")
+            : new Uri("http://api-client-asp.default.svc.cluster.local");
     }
 
     [HttpGet]
@@ -27,10 +32,10 @@ public class UserController : Controller
         var res = await _http.GetAsync($"user/{email}");
         if (!res.IsSuccessStatusCode) return NotFound();
         string content = await res.Content.ReadAsStringAsync();
-         
+
         return Ok(content);
     }
-    
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -38,10 +43,10 @@ public class UserController : Controller
     {
         JsonContent content = JsonContent.Create(model);
         var res = await _http.PostAsync($"user/", content);
-        
+
         return Ok(res.IsSuccessStatusCode);
     }
-    
+
     [HttpPut]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -52,7 +57,7 @@ public class UserController : Controller
         if (email is null || email != model.Email) return NotFound();
         JsonContent content = JsonContent.Create(model);
         var res = await _http.PutAsync($"user/", content);
-        
+
         return Ok(res.IsSuccessStatusCode);
     }
 }

@@ -10,12 +10,17 @@ public class UserController : Controller
 {
     private readonly MasterContext _cnt;
     private readonly HttpClient _http;
+    private readonly IHostEnvironment _env;
 
-    public UserController(MasterContext context, HttpClient http)
+    public UserController(MasterContext context, HttpClient http, IHostEnvironment env)
     {
         _cnt = context;
         _http = http;
-        _http.BaseAddress = new Uri("http://localhost:9090");
+        _env = env;
+        
+        _http.BaseAddress = _env.IsDevelopment()
+            ? new Uri("http://localhost:9090")
+            : new Uri("http://keycloak.default.svc.cluster.local:9090");
     }
 
     [HttpGet("{email}")]
@@ -33,6 +38,7 @@ public class UserController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Create(UserCreateUpdateRequest model)
     {
+        Console.WriteLine("Create user");
         await SetToken();
         JsonContent resp1 = JsonContent.Create(new KeycloakUserCreate(model.Email, true));
         var res1 = await _http.PostAsync($"admin/realms/otus/users", resp1);
@@ -82,9 +88,10 @@ public class UserController : Controller
 
     private async Task SetToken()
     {
+        Console.WriteLine("Get token ...");
         var tokenUrl = "realms/otus/protocol/openid-connect/token";
         var dict = new Dictionary<string, string>();
-            dict.Add("client_id", "asptestclient");
+        dict.Add("client_id", "asptestclient");
         dict.Add("client_secret", "p8nOvrIKkAx4nfwsK0E3yP8so9hwq6Kj");
         dict.Add("grant_type", "client_credentials");
         var _ = new HttpRequestMessage(HttpMethod.Post, tokenUrl)
@@ -94,6 +101,7 @@ public class UserController : Controller
         var res0 = await _http.SendAsync(_);
         var _token = await res0.Content.ReadFromJsonAsync<KeycloakTokenResponse>();
         _http.DefaultRequestHeaders.Add("Authorization", $"{_token.token_type} {_token.access_token}");
+        Console.WriteLine($"Set token {_token}");
     }
 
     private async Task<bool> SetPassword(string email, string password)

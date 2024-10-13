@@ -24,5 +24,5 @@ builder.Services.AddDbContext<MasterContext>(
 var app = builder.Build();
 
 app.MapControllers();
-
+Console.WriteLine("Start «Client» service");
 app.Run();
