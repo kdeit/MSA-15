@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otusKde", "otusKde.csproj", "{01273B18-50CB-4885-B019-0A88CE5EEBB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeGate", "OtusKdeGate.csproj", "{01273B18-50CB-4885-B019-0A88CE5EEBB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{5DC3F6DB-2034-4E4B-BE9B-D95EC69BBAAA}"
 EndProject
@@ -9,6 +9,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeDAL", "..\OtusKdeDAL\OtusKdeDAL.csproj", "{4D72D20F-C749-4161-91E0-D8F2A6AC0AC3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeClient", "..\OtusKdeClient\OtusKdeClient.csproj", "{F5C6E695-5266-4B55-B8BF-82C2B37F8BB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeBilling", "..\OtusKdeBilling\OtusKdeBilling.csproj", "{7B3C8E14-DCDD-47B9-AF3F-225FF61D9305}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeNotification", "..\OtusKdeNotification\OtusKdeNotification.csproj", "{3827DBA0-BF46-4757-A641-6440CED831D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtusKdeOrder", "..\OtusKdeOrder\OtusKdeOrder.csproj", "{48E4E02A-9A7E-40CA-9B94-84EB669B8690}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{C0AF0332-56DB-48FF-87E9-CBF8227ADAC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,8 +40,21 @@ Global
 		{F5C6E695-5266-4B55-B8BF-82C2B37F8BB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5C6E695-5266-4B55-B8BF-82C2B37F8BB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5C6E695-5266-4B55-B8BF-82C2B37F8BB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B3C8E14-DCDD-47B9-AF3F-225FF61D9305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B3C8E14-DCDD-47B9-AF3F-225FF61D9305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B3C8E14-DCDD-47B9-AF3F-225FF61D9305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B3C8E14-DCDD-47B9-AF3F-225FF61D9305}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3827DBA0-BF46-4757-A641-6440CED831D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3827DBA0-BF46-4757-A641-6440CED831D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3827DBA0-BF46-4757-A641-6440CED831D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3827DBA0-BF46-4757-A641-6440CED831D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48E4E02A-9A7E-40CA-9B94-84EB669B8690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48E4E02A-9A7E-40CA-9B94-84EB669B8690}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48E4E02A-9A7E-40CA-9B94-84EB669B8690}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48E4E02A-9A7E-40CA-9B94-84EB669B8690}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{800A9673-B2BB-4B64-832F-34FB2F62453C} = {5DC3F6DB-2034-4E4B-BE9B-D95EC69BBAAA}
+		{4D72D20F-C749-4161-91E0-D8F2A6AC0AC3} = {C0AF0332-56DB-48FF-87E9-CBF8227ADAC9}
 	EndGlobalSection
 EndGlobal

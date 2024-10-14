@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace OtusKde.Controllers;
+namespace OtusKdeGate.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

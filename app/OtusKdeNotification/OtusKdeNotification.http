@@ -1,0 +1,6 @@
+@OtusKdeNotification_HostAddress = http://localhost:5052
+
+GET {{OtusKdeNotification_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

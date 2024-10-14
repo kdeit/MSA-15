@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace OtusKde.Controllers;
+namespace OtusKdeGate.Controllers;
 
 [ApiController]
 [Route("[controller]")]
