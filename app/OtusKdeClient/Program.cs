@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using OtusKdeBus;
 using OtusKdeDAL;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IBusProducer, BusProducer>();
 
 var connectionString = "Host=localhost;Database=otus;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())

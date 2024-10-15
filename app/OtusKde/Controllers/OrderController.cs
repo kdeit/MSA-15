@@ -7,13 +7,13 @@ namespace OtusKdeGate.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WalletController : Controller
+public class OrderController : Controller
 {
     private readonly HttpClient _http;
     private readonly HttpClient _http2;
     private readonly IHostEnvironment _env;
 
-    public WalletController(HttpClient http, HttpClient http2, IHostEnvironment env)
+    public OrderController(HttpClient http, HttpClient http2, IHostEnvironment env)
     {
         _env = env;
         _http = http;
@@ -23,37 +23,24 @@ public class WalletController : Controller
         
         _http2 = http2;
         _http2.BaseAddress = _env.IsDevelopment()
-            ? new Uri("http://localhost:5166")
-            : new Uri("http://api-billing-asp.default.svc.cluster.local");
+            ? new Uri("http://localhost:5225")
+            : new Uri("http://api-order-asp.default.svc.cluster.local");
         
-    }
-
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<decimal>> Get()
-    {
-        var userId = await GetUserId();
-        _http2.DefaultRequestHeaders.Add("X-user-id", userId.ToString());
-        var res1 = await _http2.GetAsync($"/wallet");
-        if (!res1.IsSuccessStatusCode) return NotFound();
-        string amount = await res1.Content.ReadAsStringAsync();
-        
-        return Ok(Convert.ToDecimal(amount));
     }
     
-    [HttpGet("increase")]
+    [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<bool>> Get([FromQuery] decimal value)
+    public async Task<ActionResult<bool>> Create(OrderCreateRequest model)
     {
         var userId = await GetUserId();
         _http2.DefaultRequestHeaders.Add("X-user-id", userId.ToString());
-        var res = await _http2.GetAsync($"/wallet/increase?value={value}");
-            
+        
+        JsonContent content = JsonContent.Create(model);
+        var res = await _http2.PostAsync($"order/", content);
+
         return Ok(res.IsSuccessStatusCode);
     }
-
     private async Task<int> GetUserId()
     {
         var email = HttpContext.User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;

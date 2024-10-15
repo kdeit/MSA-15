@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OtusKdeBus;
+using OtusKdeBus.Model.Client;
 using OtusKdeDAL;
 
 namespace OtusKdeClient.Controllers;
@@ -11,13 +13,15 @@ public class UserController : Controller
     private readonly MasterContext _cnt;
     private readonly HttpClient _http;
     private readonly IHostEnvironment _env;
+    private readonly IBusProducer _busProducer;
 
-    public UserController(MasterContext context, HttpClient http, IHostEnvironment env)
+    public UserController(MasterContext context, HttpClient http, IHostEnvironment env, IBusProducer busProducer)
     {
         _cnt = context;
         _http = http;
         _env = env;
-        
+        _busProducer = busProducer;
+
         _http.BaseAddress = _env.IsDevelopment()
             ? new Uri("http://localhost:9090")
             : new Uri("http://keycloak.default.svc.cluster.local:9090");
@@ -29,7 +33,7 @@ public class UserController : Controller
     public async Task<ActionResult<User>> GetByEmail(string email)
     {
         var user = await GetUser(email);
-        
+
         return user is null ? NotFound() : Ok(user);
     }
 
@@ -55,6 +59,9 @@ public class UserController : Controller
             };
             _cnt.Add(newUser);
             await _cnt.SaveChangesAsync();
+            UserCreatedEvent @event = new UserCreatedEvent();
+            @event.UserId = newUser.Id;
+            _busProducer.SendClientMessage(@event);
         }
 
         return res1.IsSuccessStatusCode ? Ok() : BadRequest();
@@ -67,7 +74,7 @@ public class UserController : Controller
     {
         var user = await GetUser(model.Email);
         if (user is null) return BadRequest();
-        
+
         if (model.Password is not null && model.Password != "")
         {
             await SetToken();
@@ -77,7 +84,7 @@ public class UserController : Controller
         user.FirstName = model.FirstName;
         user.LastName = model.LastName;
         await _cnt.SaveChangesAsync();
-        
+
         return Ok();
     }
 
