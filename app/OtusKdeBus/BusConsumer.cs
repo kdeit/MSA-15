@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using OtusKdeBus.Model;
 using OtusKdeBus.Model.Client;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -18,21 +19,43 @@ public class BusConsumer : IBusConsumer
         _channel = connection.CreateModel();
     }
 
-    public void OnClientCreated(Action<UserCreatedEvent> fn)
+    private void Consume<T>(string queue_name, MessageType type, Action<T> fn)
     {
         var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += (model, ea) =>
         {
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
-            //Console.WriteLine($"message {message}");
-            var res = JsonSerializer.Deserialize<UserCreatedEvent>(message); 
-            Console.WriteLine($"res {res.UserId}");
+            var res = JsonSerializer.Deserialize<T>(message);
             fn(res);
         };
+        _channel.QueueDeclare(queue: $"Queue_{type}.{queue_name}", durable: true, exclusive: false, autoDelete: false,
+            arguments: null);
+        _channel.QueueBind(queue: $"Queue_{type}.{queue_name}", exchange: "user_exchange",
+            routingKey: $"Routing_key_{type}");
 
-        _channel.BasicConsume("ClientQueue2",
+        _channel.BasicConsume($"Queue_{type}.{queue_name}",
             autoAck: true,
             consumer: consumer);
+    }
+
+    public void OnClientUserCreated(string queue_name, Action<ClientUserCreatedEvent> fn)
+    {
+        this.Consume(queue_name, MessageType.USER_CREATED, fn);
+    }
+
+    public void OnOrderCreated(string queue_name, Action<OrderCreatedEvent> fn)
+    {
+        this.Consume(queue_name, MessageType.ORDER_CREATED, fn);
+    }
+
+    public void OnBillingOrderConfirmed(string queue_name, Action<BillingOrderConfirmedEvent> fn)
+    {
+        this.Consume(queue_name, MessageType.BILLING_ORDER_CONFIRMED, fn);
+    }
+
+    public void OnBillingOrderRejected(string queue_name, Action<BillingOrderRejectedEvent> fn)
+    {
+        this.Consume(queue_name, MessageType.BILLING_ORDER_REJECTED, fn);
     }
 }

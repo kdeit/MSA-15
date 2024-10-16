@@ -5,7 +5,10 @@ using OtusKdeDAL.BusConsumers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddSingleton<IBusConsumer, BusConsumer>();
+builder.Services.AddScoped<IBusConsumer, BusConsumer>();
+builder.Services.AddScoped<IBusProducer, BusProducer>();
+builder.Services.AddScoped<OrderBusConsumer>();
+builder.Services.AddScoped<ClientBusConsumer>();
 
 var connectionString = "Host=localhost;Database=otus_billing;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())
@@ -27,13 +30,16 @@ var app = builder.Build();
 // Create db
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
-var context = services.GetRequiredService<BillingContext>();
+var context = services.GetService<BillingContext>();
 context.Database.EnsureCreated();
 //EOF Create db
 
-var context2 = services.GetService<IBusConsumer>();
-var i = new ClientBusConsumer(context2, context);
-i.Init();
+var consumer1 = services.GetService<OrderBusConsumer>();
+consumer1.Init();
+var consumer2 = services.GetService<ClientBusConsumer>();
+consumer2.Init();
+
 
 app.MapControllers();
+Console.WriteLine("Start «Billing» service");
 app.Run();

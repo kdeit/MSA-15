@@ -28,6 +28,19 @@ public class OrderController : Controller
         
     }
     
+    [HttpGet("{orderId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<bool>> Get(int orderId)
+    {
+        var userId = await GetUserId();
+        var res = await _http2.GetAsync($"order/{orderId}/{userId}");
+        if (!res.IsSuccessStatusCode) return NotFound();
+        Order content = await res.Content.ReadFromJsonAsync<Order>();
+
+        return Ok(content);
+    }
+    
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

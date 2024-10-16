@@ -1,6 +1,8 @@
+using OtusKdeBus.Model;
+
 namespace OtusKdeBus;
 
 public interface IBusProducer
 {
-    public void SendClientMessage<T>(T message);
+    public void SendMessage<T>(T message) where T: BaseEvent;
 }

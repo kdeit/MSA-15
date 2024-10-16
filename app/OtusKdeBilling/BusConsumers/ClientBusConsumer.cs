@@ -6,17 +6,19 @@ namespace OtusKdeDAL.BusConsumers;
 public class ClientBusConsumer
 {
     private IBusConsumer _consumer;
+    private IBusProducer _producer;
     private BillingContext _cnt;
 
-    public ClientBusConsumer(IBusConsumer busConsumer, BillingContext context)
+    public ClientBusConsumer(IBusConsumer busConsumer, BillingContext context, IBusProducer producer)
     {
         _consumer = busConsumer;
         _cnt = context;
+        _producer = producer;
     }
 
     public void Init()
     {
-        Action<UserCreatedEvent> action = (x) =>
+        Action<ClientUserCreatedEvent> action = (x) =>
         {
             Console.WriteLine(x.UserId);
             _cnt.Wallets.AddAsync(new Wallet()
@@ -26,6 +28,7 @@ public class ClientBusConsumer
             });
             _cnt.SaveChangesAsync();
         };
-        _consumer.OnClientCreated(action);
+        _consumer.OnClientUserCreated("melon", action);
+        
     }
 }

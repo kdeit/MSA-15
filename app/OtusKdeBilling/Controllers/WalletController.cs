@@ -7,12 +7,12 @@ namespace OtusKdeBilling.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BillingController : ControllerBase
+public class WalletController : ControllerBase
 {
-    private readonly ILogger<BillingController> _logger;
+    private readonly ILogger<WalletController> _logger;
     private readonly BillingContext _cnt;
 
-    public BillingController(ILogger<BillingController> logger, BillingContext cnt)
+    public WalletController(ILogger<WalletController> logger, BillingContext cnt)
     {
         _logger = logger;
         _cnt = cnt;

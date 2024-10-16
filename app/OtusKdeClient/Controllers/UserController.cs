@@ -27,12 +27,25 @@ public class UserController : Controller
             : new Uri("http://keycloak.default.svc.cluster.local:9090");
     }
 
+    /**
+     * TODO: merge 2 methods 
+     */
+    [HttpGet("id/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<User>> GetById(int id)
+    {
+        var user = await _cnt.Users.FirstOrDefaultAsync(_ => _.Id == id);
+
+        return user is null ? NotFound() : Ok(user);
+    }
+    
     [HttpGet("{email}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<User>> GetByEmail(string email)
     {
-        var user = await GetUser(email);
+        var user = await GetUserByEmail(email);
 
         return user is null ? NotFound() : Ok(user);
     }
@@ -59,9 +72,9 @@ public class UserController : Controller
             };
             _cnt.Add(newUser);
             await _cnt.SaveChangesAsync();
-            UserCreatedEvent @event = new UserCreatedEvent();
+            ClientUserCreatedEvent @event = new ClientUserCreatedEvent();
             @event.UserId = newUser.Id;
-            _busProducer.SendClientMessage(@event);
+            _busProducer.SendMessage(@event);
         }
 
         return res1.IsSuccessStatusCode ? Ok() : BadRequest();
@@ -72,7 +85,7 @@ public class UserController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Update(UserCreateUpdateRequest model)
     {
-        var user = await GetUser(model.Email);
+        var user = await GetUserByEmail(model.Email);
         if (user is null) return BadRequest();
 
         if (model.Password is not null && model.Password != "")
@@ -88,7 +101,7 @@ public class UserController : Controller
         return Ok();
     }
 
-    private async Task<User> GetUser(string email)
+    private async Task<User> GetUserByEmail(string email)
     {
         return await _cnt.Users.FirstOrDefaultAsync(u => u.Email == email);
     }

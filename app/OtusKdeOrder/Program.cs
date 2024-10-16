@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OtusKdeBus;
 using OtusKdeDAL;
+using OtusKdeDAL.BusConsumers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -31,6 +32,13 @@ var services = scope.ServiceProvider;
 var context = services.GetRequiredService<OrderContext>();
 context.Database.EnsureCreated();
 //EOF Create db
+
+
+var context2 = services.GetService<IBusConsumer>();
+var context3 = services.GetService<IBusProducer>();
+
+var i = new BillingBusConsumer(context2, context, context3);
+i.Init();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
