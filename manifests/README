@@ -16,3 +16,8 @@
 7 - ApiGate
     #minikube addons enable ingress
     kubectl apply -f ./07_api-gate
+8 - RabbitMq
+    helm upgrade --install -f ./08_rabbit/rabbit.yaml rabbit oci://registry-1.docker.io/bitnamicharts/rabbitmq
+9 - API billing + notification + order:
+    kubectl apply -f ./10_add-api
+    

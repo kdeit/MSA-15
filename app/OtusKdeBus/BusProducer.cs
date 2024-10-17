@@ -10,8 +10,18 @@ public class BusProducer : IBusProducer
 
     public BusProducer()
     {
+        /**
+         * TODO:: get other
+         */
+
+        var isProduction = Environment.GetEnvironmentVariable("DB_HOST") is not null;
+        var HostName = isProduction
+            ? "rabbit-rabbitmq.default.svc.cluster.local"
+            : "localhost";
+        Console.WriteLine($"Try connect to {HostName}...");
+
         var factory = new ConnectionFactory()
-            { HostName = "localhost", VirtualHost = "otus", Port = 5672, UserName = "admin", Password = "sEcret" };
+            { HostName = HostName, VirtualHost = "otus", Port = 5672, UserName = "admin", Password = "sEcret" };
         var connection = factory.CreateConnection();
         _channel = connection.CreateModel();
     }

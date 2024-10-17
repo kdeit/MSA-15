@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OtusKdeDAL;
 
@@ -50,9 +49,11 @@ public class OrderController : Controller
         _http2.DefaultRequestHeaders.Add("X-user-id", userId.ToString());
         
         JsonContent content = JsonContent.Create(model);
-        var res = await _http2.PostAsync($"order/", content);
+        var resp0 = await _http2.PostAsync($"order/", content);
+        if (!resp0.IsSuccessStatusCode) return BadRequest();
+        var res = await resp0.Content.ReadAsStringAsync();
 
-        return Ok(res.IsSuccessStatusCode);
+        return Ok(res);
     }
     private async Task<int> GetUserId()
     {

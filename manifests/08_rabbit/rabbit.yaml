@@ -1,0 +1,35 @@
+auth:
+  password: CHANGEME
+extraSecrets:
+  load-definition:
+    load_definition.json: |
+      {
+        "users": [
+          {
+            "name": "admin",
+            "password": "sEcret",
+            "tags": "administrator"
+          }
+        ],
+        "vhosts": [
+          {
+            "name": "otus"
+          }
+        ],
+        "exchanges": [
+          {
+            "name": "user_exchange",
+            "vhost": "otus",
+            "type": "direct",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+          }
+        ]
+      }
+loadDefinition:
+  enabled: true
+  existingSecret: load-definition
+extraConfiguration: |
+  load_definitions = /app/load_definition.json

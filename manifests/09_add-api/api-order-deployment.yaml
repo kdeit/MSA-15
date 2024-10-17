@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-order-asp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-order-asp
+  template:
+    metadata:
+      labels:
+        app: api-order-asp
+    spec:
+      containers:
+      - name: api-order-asp
+        image: kdeit/asp-order:latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: app-config
+          - secretRef:
+              name: app-config

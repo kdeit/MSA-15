@@ -39,7 +39,7 @@ public class OrderController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<decimal>> Create([FromHeader(Name = "X-user-id")] [Required] int UserId,
+    public async Task<ActionResult<int>> Create([FromHeader(Name = "X-user-id")] [Required] int UserId,
         OrderCreateRequest model)
     {
         _logger.LogInformation("Create order for user {0}", UserId);
@@ -61,6 +61,6 @@ public class OrderController : ControllerBase
         };
         _busProducer.SendMessage(@event);
 
-        return Ok();
+        return Ok(nv.Id);
     }
 }

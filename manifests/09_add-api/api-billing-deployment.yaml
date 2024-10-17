@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-billing-asp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-billing-asp
+  template:
+    metadata:
+      labels:
+        app: api-billing-asp
+    spec:
+      containers:
+      - name: api-billing-asp
+        image: kdeit/asp-billing:latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: app-config
+          - secretRef:
+              name: app-config

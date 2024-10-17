@@ -1,0 +1,468 @@
+{
+	"info": {
+		"_postman_id": "59bb0e49-8060-448c-97b6-7925b0149a3c",
+		"name": "otus-26",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6380106"
+	},
+	"item": [
+		{
+			"name": "CreateUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if(pm.info.iteration > 0){",
+							"pm.execution.skipRequest();    ",
+							"}",
+							"const name = Math.random().toString(36).slice(2);",
+							"    console.warn(\"New name: \", name);",
+							"    pm.collectionVariables.set(\"firstName\", name);",
+							"const uuid = require('uuid')",
+							"let email=uuid()+'@domain.com'",
+							"pm.collectionVariables.set(\"email\", email);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\",\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"password\": \"{{password}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/user",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"access_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWalletAmount",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if(pm.info.iteration === 0){",
+							"pm.test(\"No money\", function () {",
+							"   var jsonData = pm.response.json();",
+							"   pm.expect(jsonData).to.eql(0);",
+							"});",
+							"}",
+							"if(pm.info.iteration === 1){",
+							"    pm.test(\"Wallet increas succesfull\", function () {",
+							"   var jsonData = pm.response.json();",
+							"   pm.expect(jsonData).to.eql(1000);",
+							"});",
+							"}",
+							"if(pm.info.iteration === 3){",
+							"    pm.test(\"Wallet increas succesfull\", function () {",
+							"   var jsonData = pm.response.json();",
+							"   pm.expect(jsonData).to.eql(0);",
+							"});",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/wallet",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"wallet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWalletIncrease",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response success code\", function () {",
+							"        pm.response.to.have.status(200);",
+							"    })"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"wallet_increase_value\", 1000);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/wallet/increase?value={{wallet_increase_value}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"wallet",
+						"increase"
+					],
+					"query": [
+						{
+							"key": "value",
+							"value": "{{wallet_increase_value}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateOrder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"order_id\", jsonData);",
+							"pm.test(\"Response success code\", function () {",
+							"        pm.response.to.have.status(200);",
+							"    })"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Total\": {{order_total}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/order",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOrder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if(pm.info.iteration === 0){",
+							"pm.test(\"Order rejected (no money)\", function () {",
+							"   var jsonData = pm.response.json();",
+							"   pm.expect(jsonData.status).to.eql(2);",
+							"});",
+							"}",
+							"if(pm.info.iteration === 1){",
+							"    pm.test(\"Order accepted\", function () {",
+							"   var jsonData = pm.response.json();",
+							"   pm.expect(jsonData.status).to.eql(1);",
+							"});",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Total\": 200.12\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/order/{{order_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"{{order_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"value": ""
+		},
+		{
+			"key": "base_url",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "test@email.loc",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "sEcret1",
+			"type": "string"
+		},
+		{
+			"key": "firstName",
+			"value": "Prenom",
+			"type": "string"
+		},
+		{
+			"key": "lastName",
+			"value": "Nom",
+			"type": "string"
+		},
+		{
+			"key": "client_id",
+			"value": "asptestclient",
+			"type": "string"
+		},
+		{
+			"key": "client_secret",
+			"value": "p8nOvrIKkAx4nfwsK0E3yP8so9hwq6Kj",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "--",
+			"type": "string"
+		},
+		{
+			"key": "order_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "wallet_increase_value",
+			"value": "1000",
+			"type": "string"
+		},
+		{
+			"key": "order_total",
+			"value": "2000",
+			"type": "string"
+		}
+	]
+}
