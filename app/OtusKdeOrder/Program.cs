@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using OtusKdeBus;
 using OtusKdeDAL;
-using OtusKdeDAL.BusConsumers;
+using OtusKdeOrder.BusConsumers;
+using OtusKdeTransaction;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddSingleton<IBusConsumer, BusConsumer>();
-builder.Services.AddSingleton<IBusProducer, BusProducer>();
+builder.Services.AddScoped<IBusConsumer, BusConsumer>();
+builder.Services.AddScoped<IBusProducer, BusProducer>();
+builder.Services.AddScoped<OrderBusConsumer>();
 
 var connectionString = "Host=localhost;Database=otus_order;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())
@@ -33,12 +35,8 @@ var context = services.GetRequiredService<OrderContext>();
 context.Database.EnsureCreated();
 //EOF Create db
 
-
-var context2 = services.GetService<IBusConsumer>();
-var context3 = services.GetService<IBusProducer>();
-
-var i = new BillingBusConsumer(context2, context, context3);
-i.Init();
+services.GetService<OrderBusConsumer>().Init();
+new OrderTransactionSaga();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

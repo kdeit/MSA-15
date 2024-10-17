@@ -1,9 +1,10 @@
 using OtusKdeBus;
 using OtusKdeBus.Model.Client;
+using OtusKdeDAL;
 
-namespace OtusKdeDAL.BusConsumers;
+namespace OtusKdeNotification.BusConsumers;
 
-public class BillingBusConsumer
+public class OrderBusConsumer
 {
     private IBusConsumer _consumer;
     private NotificationContext _cnt;
@@ -11,7 +12,7 @@ public class BillingBusConsumer
     private readonly HttpClient _http2;
     private readonly IHostEnvironment _env;
 
-    public BillingBusConsumer(
+    public OrderBusConsumer(
         IBusConsumer busConsumer,
         NotificationContext context,
         HttpClient http,
@@ -34,9 +35,8 @@ public class BillingBusConsumer
 
     public void Init()
     {
-        Action<BillingOrderConfirmedEvent> action = async (x) =>
+        Action<OrderConfirmedEvent> action = async (x) =>
         {
-            Console.WriteLine("Hello");
             var order = await GetOrderById(x.OrderId);
             if (order is null) return;
             var user = await GetUserById(order.UserId);
@@ -52,9 +52,9 @@ public class BillingBusConsumer
             _cnt.Add(nv);
             _cnt.SaveChanges();
         };
-        _consumer.OnBillingOrderConfirmed("apple", action);
+        _consumer.OnOrderConfirmed("apple", action);
 
-        Action<BillingOrderRejectedEvent> action2 = async (x) =>
+        Action<OrderRevertedEvent> action2 = async (x) =>
         {
             var order = await GetOrderById(x.OrderId);
             if (order is null) return;
@@ -66,12 +66,12 @@ public class BillingBusConsumer
                 Email = user.Email,
                 Status = NotificationStatus.SENDED,
                 UserId = user.Id,
-                Message = $"Order with id {order.Id} rejected"
+                Message = $"Order with id {order.Id} reverted"
             };
             _cnt.Add(nv);
             _cnt.SaveChanges();
         };
-        _consumer.OnBillingOrderRejected("pear", action2);
+        _consumer.OnOrderReverted("pear", action2);
     }
 
     private async Task<Order?> GetOrderById(int id)

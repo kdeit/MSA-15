@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using OtusKdeBus;
 using OtusKdeBus.Model.Client;
 

@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using OtusKdeBus;
 using OtusKdeDAL;
-using OtusKdeDAL.BusConsumers;
+using OtusKdeNotification.BusConsumers;
 
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IBusConsumer, BusConsumer>();
-builder.Services.AddScoped<BillingBusConsumer>();
+builder.Services.AddScoped<OrderBusConsumer>();
 builder.Services.AddHttpClient();
 
 // Add services to the container.
@@ -37,7 +37,7 @@ var context = services.GetService<NotificationContext>();
 context.Database.EnsureCreated();
 //EOF Create db
 
-var consumer1 = services.GetService<BillingBusConsumer>();
+var consumer1 = services.GetService<OrderBusConsumer>();
 consumer1.Init();
 
 app.MapControllers();

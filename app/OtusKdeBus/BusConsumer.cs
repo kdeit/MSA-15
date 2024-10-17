@@ -58,13 +58,18 @@ public class BusConsumer : IBusConsumer
     {
         this.Consume(queue_name, MessageType.ORDER_CREATED, fn);
     }
-
-    public void OnBillingOrderConfirmed(string queue_name, Action<BillingOrderConfirmedEvent> fn)
+    
+    public void OnOrderConfirmed(string queue_name, Action<OrderConfirmedEvent> fn)
     {
-        this.Consume(queue_name, MessageType.BILLING_ORDER_CONFIRMED, fn);
+        this.Consume(queue_name, MessageType.ORDER_CONFIRMED, fn);
     }
-
-    public void OnBillingOrderRejected(string queue_name, Action<BillingOrderRejectedEvent> fn)
+    
+    public void OnOrderReverted(string queue_name, Action<OrderRevertedEvent> fn)
+    {
+        this.Consume(queue_name, MessageType.ORDER_REVERTED, fn);
+    }
+    
+    public void OnBillingOrderReverted(string queue_name, Action<BillingOrderRejectedEvent> fn)
     {
         this.Consume(queue_name, MessageType.BILLING_ORDER_REJECTED, fn);
     }

@@ -1,16 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using OtusKdeBus;
 using OtusKdeBus.Model.Client;
+using OtusKdeDAL;
 
-namespace OtusKdeDAL.BusConsumers;
+namespace OtusKdeOrder.BusConsumers;
 
-public class BillingBusConsumer
+public class OrderBusConsumer
 {
     private IBusConsumer _consumer;
     private IBusProducer _producer;
     private OrderContext _cnt;
 
-    public BillingBusConsumer(IBusConsumer busConsumer, OrderContext context, IBusProducer producer)
+    public OrderBusConsumer(IBusConsumer busConsumer, OrderContext context, IBusProducer producer)
     {
         _consumer = busConsumer;
         _cnt = context;
@@ -19,7 +20,7 @@ public class BillingBusConsumer
 
     public void Init()
     {
-        Action<BillingOrderConfirmedEvent> action = async (x) =>
+        Action<OrderConfirmedEvent> action = async (x) =>
         {
             Console.WriteLine(x.OrderId);
             var order = await _cnt.Orders.FirstOrDefaultAsync(_ => _.Id == x.OrderId);
@@ -27,9 +28,9 @@ public class BillingBusConsumer
             order.Status = OrderStatus.CONFIRMED;
             _cnt.SaveChangesAsync();
         };
-        _consumer.OnBillingOrderConfirmed("banan", action);
-
-        Action<BillingOrderRejectedEvent> action2 = async (x) =>
+        _consumer.OnOrderConfirmed("banan", action);
+        
+        Action<OrderRevertedEvent> action2 = async (x) =>
         {
             Console.WriteLine(x.OrderId);
             var order = await _cnt.Orders.FirstOrDefaultAsync(_ => _.Id == x.OrderId);
@@ -37,6 +38,8 @@ public class BillingBusConsumer
             order.Status = OrderStatus.REJECTED;
             _cnt.SaveChangesAsync();
         };
-        _consumer.OnBillingOrderRejected("orange", action2);
+        _consumer.OnOrderReverted("banana", action2);
+
+        
     }
 }
