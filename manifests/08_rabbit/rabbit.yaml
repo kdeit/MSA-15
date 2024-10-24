@@ -16,6 +16,15 @@ extraSecrets:
             "name": "otus"
           }
         ],
+        "permissions": [
+          {
+            "user": "admin",
+            "vhost": "otus",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+          }
+        ],
         "exchanges": [
           {
             "name": "user_exchange",

@@ -19,5 +19,8 @@
 8 - RabbitMq
     helm upgrade --install -f ./08_rabbit/rabbit.yaml rabbit oci://registry-1.docker.io/bitnamicharts/rabbitmq
 9 - API billing + notification + order:
-    kubectl apply -f ./10_add-api
-    
+    kubectl apply -f ./09_add-api
+10 - API delivery + stock:
+    kubectl apply -f ./10_api-stock+delivery
+11 - Redis
+    helm upgrade --install -f ./11_redis/redis.yaml redis oci://registry-1.docker.io/bitnamicharts/redis

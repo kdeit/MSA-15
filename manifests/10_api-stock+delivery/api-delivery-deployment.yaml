@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-delivery-asp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-delivery-asp
+  template:
+    metadata:
+      labels:
+        app: api-delivery-asp
+    spec:
+      containers:
+      - name: api-delivery-asp
+        image: kdeit/asp-delivery:latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: app-config
+          - secretRef:
+              name: app-config
