@@ -8,7 +8,6 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IBusConsumer, BusConsumer>();
 builder.Services.AddScoped<IBusProducer, BusProducer>();
 builder.Services.AddScoped<OrderBusConsumer>();
-builder.Services.AddScoped<ClientBusConsumer>();
 
 var connectionString = "Host=localhost;Database=otus_billing;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())
@@ -31,14 +30,12 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 var context = services.GetService<BillingContext>();
+//context.Database.EnsureDeleted();
 context.Database.EnsureCreated();
 //EOF Create db
 
 var consumer1 = services.GetService<OrderBusConsumer>();
 consumer1.Init();
-var consumer2 = services.GetService<ClientBusConsumer>();
-consumer2.Init();
-
 
 app.MapControllers();
 Console.WriteLine("Start «Billing» service");

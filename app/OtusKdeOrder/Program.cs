@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IBusConsumer, BusConsumer>();
 builder.Services.AddScoped<IBusProducer, BusProducer>();
 builder.Services.AddScoped<OrderBusConsumer>();
+builder.Services.AddSingleton<OrderTransactionSaga>();
 
 var connectionString = "Host=localhost;Database=otus_order;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())
@@ -26,6 +27,17 @@ builder.Services.AddDbContext<OrderContext>(
     opt => opt.UseNpgsql(connectionString)
 );
 
+
+var isProduction = Environment.GetEnvironmentVariable("DB_PASSWORD") is not null;
+var HostName = isProduction
+    ? "redis-master.default.svc.cluster.local"
+    : "localhost";
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = HostName;
+    options.InstanceName = "wtm";
+});
 var app = builder.Build();
 
 // Create db
@@ -36,7 +48,9 @@ context.Database.EnsureCreated();
 //EOF Create db
 
 services.GetService<OrderBusConsumer>().Init();
-new OrderTransactionSaga();
+
+var saga = services.GetService<OrderTransactionSaga>();
+saga.Handle();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

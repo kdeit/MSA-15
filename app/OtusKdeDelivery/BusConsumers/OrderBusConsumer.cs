@@ -19,7 +19,7 @@ public class OrderBusConsumer
         Action<OrderCreatedEvent> action = async (x) =>
         {
             var random = new Random();
-            Thread.Sleep(random.Next(1000, 10000));
+            Thread.Sleep(random.Next(500, 1500));
             var b = random.Next(2);
             Console.WriteLine($"Check delivery for order:: {x.OrderId} with result ${b}");
             if (b == 1)

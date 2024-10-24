@@ -14,8 +14,9 @@ public class BillingContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Wallet>().HasIndex(u => u.UserId).IsUnique();
+        modelBuilder.Entity<Payments>();
     }
 
-    public DbSet<Wallet> Wallets { get; set; }
+    public DbSet<Payments> Payments { get; set; }
+    public DbSet<Wallets> Wallets { get; set; }
 }
