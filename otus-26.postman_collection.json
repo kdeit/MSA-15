@@ -26,13 +26,18 @@
 						"exec": [
 							"if(pm.info.iteration > 0){",
 							"pm.execution.skipRequest();    ",
+							"}else{",
+							"    pm.collectionVariables.set(\"wallet_value_current\", 0);",
+							"    ",
 							"}",
 							"const name = Math.random().toString(36).slice(2);",
 							"    console.warn(\"New name: \", name);",
 							"    pm.collectionVariables.set(\"firstName\", name);",
 							"const uuid = require('uuid')",
 							"let email=uuid()+'@domain.com'",
-							"pm.collectionVariables.set(\"email\", email);"
+							"pm.collectionVariables.set(\"email\", email);",
+							"",
+							"pm.collectionVariables.set(\"wallet_value_current\", 0);"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -127,82 +132,19 @@
 			"response": []
 		},
 		{
-			"name": "GetWalletAmount",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"if(pm.info.iteration === 0){",
-							"pm.test(\"No money\", function () {",
-							"   var jsonData = pm.response.json();",
-							"   pm.expect(jsonData).to.eql(0);",
-							"});",
-							"}",
-							"if(pm.info.iteration === 1){",
-							"    pm.test(\"Wallet increas succesfull\", function () {",
-							"   var jsonData = pm.response.json();",
-							"   pm.expect(jsonData).to.eql(1000);",
-							"});",
-							"}",
-							"if(pm.info.iteration === 3){",
-							"    pm.test(\"Wallet increas succesfull\", function () {",
-							"   var jsonData = pm.response.json();",
-							"   pm.expect(jsonData).to.eql(0);",
-							"});",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{access_token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/api/wallet",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"api",
-						"wallet"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "GetWalletIncrease",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response success code\", function () {",
-							"        pm.response.to.have.status(200);",
-							"    })"
+							"var increase = pm.collectionVariables.get(\"wallet_increase_value\");",
+							"var total = pm.collectionVariables.get(\"wallet_value_current\");",
+							"",
+							"pm.test(\"Response success\", function () {   ",
+							"   pm.expect(pm.response.code).to.eql(200);",
+							"   pm.collectionVariables.set(\"wallet_value_current\", parseInt(total) + parseInt(increase));",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -212,7 +154,10 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"pm.collectionVariables.set(\"wallet_increase_value\", 1000);",
+							"",
+							"pm.collectionVariables.set(\"wallet_increase_value\", (pm.info.iteration + 1) *  2000);",
+							"",
+							"",
 							""
 						],
 						"type": "text/javascript",
@@ -266,20 +211,91 @@
 			"response": []
 		},
 		{
+			"name": "GetWalletAmount",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var total = pm.collectionVariables.get(\"wallet_value_current\");",
+							"",
+							"pm.test(\"Check money success answer\", function () {   ",
+							"   ",
+							"   pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"Check money success value::\" + total, function () {   ",
+							"   ",
+							"   const val = parseInt(pm.response.text());",
+							"   pm.expect(val).to.eql(total);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/wallet",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"wallet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "CreateOrder",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = pm.response.json();",
-							"pm.collectionVariables.set(\"order_id\", jsonData);",
+							"var n = pm.response.text();",
+							"pm.collectionVariables.set(\"order_id\", n);",
 							"pm.test(\"Response success code\", function () {",
 							"        pm.response.to.have.status(200);",
-							"    })"
+							"    })",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
 					}
 				}
 			],
@@ -325,17 +341,25 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"if(pm.info.iteration === 0){",
-							"pm.test(\"Order rejected (no money)\", function () {",
-							"   var jsonData = pm.response.json();",
-							"   pm.expect(jsonData.status).to.eql(2);",
+							"pm.test(\"Order created with success\", function () {",
+							"   pm.expect(pm.response.code).to.eql(200);",
 							"});",
-							"}",
-							"if(pm.info.iteration === 1){",
-							"    pm.test(\"Order accepted\", function () {",
-							"   var jsonData = pm.response.json();",
-							"   pm.expect(jsonData.status).to.eql(1);",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Order not PENDING STATUS\", function () {",
+							"   pm.expect(jsonData.status).not.equal(0);",
 							"});",
+							"",
+							"",
+							"var wallet = pm.collectionVariables.get(\"wallet_value_current\");",
+							"var orderTotal = pm.collectionVariables.get(\"order_total\");",
+							"",
+							"// Order confirmed",
+							"if(jsonData.status === 1){",
+							"    pm.collectionVariables.set(\"wallet_value_current\", total - orderTotal);",
+							"    pm.test(\"Wallet is positive\", function () {",
+							"        pm.expect(pm.collectionVariables.get(\"wallet_value_current\")).to.above(0);",
+							"}); ",
 							"}"
 						],
 						"type": "text/javascript",
@@ -377,6 +401,63 @@
 						"api",
 						"order",
 						"{{order_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dublicate GetWalletAmount",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var total = pm.collectionVariables.get(\"wallet_value_current\");",
+							"",
+							"pm.test(\"Check money success value2:: \" + total, function () {   ",
+							"   ",
+							"   const val = parseInt(pm.response.text());",
+							"   pm.expect(val).to.eql(total);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/wallet",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"wallet"
 					]
 				}
 			},
@@ -460,9 +541,18 @@
 			"type": "string"
 		},
 		{
+			"key": "wallet_value_current",
+			"value": "0",
+			"type": "string"
+		},
+		{
 			"key": "order_total",
 			"value": "2000",
 			"type": "string"
+		},
+		{
+			"key": "02000",
+			"value": ""
 		}
 	]
 }
